@@ -7,20 +7,22 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-// Local url
- private surveysUrl = 'http://localhost:3000/api/';
-// Heroku url
-//private surveysUrl = 'https://comp229-curvey-project.herokuapp.com/api/';
+  private permissionLevel: number = 0; // Initialize the permission level to 0
+
+  private surveysUrl = 'http://localhost:3000/api/';
+
   constructor(private http: HttpClient) { }
+
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<{token: string}>(this.surveysUrl+'users/signIn', {username: username, password: password})
-        .pipe(
-            map(result => {
-              console.log(result);
-              localStorage.setItem('access_token', result.token);
-              return true;
-            })
-        );
+    return this.http.post<{token: string, permissionlevel: number}>(this.surveysUrl+'users/signIn', {username: username, password: password})
+      .pipe(
+        map(result => {
+          console.log(result);
+          localStorage.setItem('access_token', result.token);
+          this.permissionLevel = result.permissionlevel; // Set the permission level value
+          return true;
+        })
+      );
   }
 
   logout() {
@@ -28,6 +30,12 @@ export class AuthService {
   }
 
   public get loggedIn(): boolean {
-    return (localStorage.getItem('access_token') !== null);
+    console.log('Tokenn', localStorage.getItem('access_token') )
+    return (localStorage.getItem('access_token') !== null);   
+  }
+
+  public get hasPermission(): boolean {
+    console.log('Permission Level:', this.permissionLevel);
+    return this.permissionLevel !== 1;
   }
 }

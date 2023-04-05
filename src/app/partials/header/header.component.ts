@@ -3,7 +3,6 @@ import{ ActivatedRoute} from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -18,6 +17,8 @@ export class HeaderComponent implements OnInit {
     this.auth.logout();
   }
 
-  ngOnInit(): void {}
-
+  ngOnInit() {
+    const hasPermission = this.auth.hasPermission;
+    console.log(hasPermission);
+  }
 }

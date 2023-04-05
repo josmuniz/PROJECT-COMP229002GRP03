@@ -14,7 +14,7 @@ const Surfer = config.permissionLevels.Master;
 
 router.route('/')
       .post(users.create)
-      .get([passport.authenticate('jwt', {session: false}), permissionController.minimumPermissionLevelRequired(Member), users.list]);
+      .get([passport.authenticate('jwt', {session: false}), permissionController.minimumPermissionLevelRequired(Master), users.list]);
 
 router.route('/:username')
     .patch([passport.authenticate('jwt', {session: false}), permissionController.onlySameUserOrAdminCanDoThisAction, users.changePassword])
@@ -26,10 +26,10 @@ router.route('/:username')
     });
 
 router.route('/:username/promoteToMember')
-    .patch([passport.authenticate('jwt', {session: false}), permissionController.minimumPermissionLevelRequired(Master), users.promoteTo(Member | Surfer)]);
+    .patch([passport.authenticate('jwt', {session: false}), permissionController.minimumPermissionLevelRequired(Master), users.promoteTo(Member)]);
 
 router.route('/:username/promoteToMaster')
-    .patch([passport.authenticate('jwt', {session: false}), permissionController.minimumPermissionLevelRequired(Master), users.promoteTo(Master | Member | Surfer)]);
+    .patch([passport.authenticate('jwt', {session: false}), permissionController.minimumPermissionLevelRequired(Master), users.promoteTo(Master | Member)]);
 
 
 
@@ -66,8 +66,12 @@ router.post(
 
                             const body = { _id: user._id, email: user.email, username: user.username, permissionLevel: user.permissionLevel };
                             const token = jwt.sign({ user: body }, apiSecret);
-
-                            return res.json({ token });
+                            const permissionlevel = user.permissionLevel;
+                            //console.log(user.permissionLevel);
+                            console.log('PERMISO', permissionlevel);
+                            console.log('token',token);
+                            console.log(apiSecret);   
+                            return res.json({ token, permissionlevel });
                         }
                     );
                 } catch (error) {
