@@ -9,7 +9,9 @@ import { map } from 'rxjs/operators';
 export class AuthService {
   private permissionLevel: number = 0; // Initialize the permission level to 0
 
-  private surveysUrl = 'http://localhost:3000/api/';
+  //private surveysUrl = 'http://localhost:3000/api/';
+
+  private surveysUrl = 'https://comp229002grp03-server01.onrender.com/api/';
 
   constructor(private http: HttpClient) { }
 
